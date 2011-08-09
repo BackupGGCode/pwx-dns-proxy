@@ -14,6 +14,7 @@ from upstreamservers import UpstreamServers
 from twisted.names.dns import DomainError
 from twisted.names.error import DNSNotImplementedError, DNSQueryTimeoutError
 from twisted.internet import defer
+from twisted.internet.error import TimeoutError
 
 class RequestDispatcher(common.ResolverBase):
 	
@@ -43,18 +44,16 @@ class RequestDispatcher(common.ResolverBase):
 			return self.local._lookup(name, cls, type, timeout)
 		except DomainError:
 			pass
-		except TimeoutError:
-			pass
 			
 		# 尝试使用 Upstream Resolver 解析。
 		try:
 			resolver = self.upstream.select(name)
 			if resolver != None:
 				return resolver._lookup(name, cls, type, timeout)
-		except DomainError:
-			pass
-		except TimeoutError:
-			pass
+		except DomainError as e:
+			raise defer.fail(e)
+		except TimeoutError as e:
+			raise defer.fail(e)
 		
 		# 最终抛出异常
 		raise defer.fail(DomainError())

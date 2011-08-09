@@ -8,6 +8,7 @@
 """
 
 from twisted.names import dns, client
+from twisted.internet import defer
 import log
 
 #class DummyResolver(client.Resolver):
