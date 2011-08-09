@@ -14,14 +14,14 @@ VERSION = "0.1 alpha 2"
 
 # 输出参数用法
 def usage():
-	print "平芜泫 DNS 代理服务器 %s" % VERSION
+	print unicode("平芜泫 DNS 代理服务器 %s" % VERSION, 'utf-8')
 	print ""
-	print "命令行：dnsproxy [--version] [-h] [--help] [-c config-file] [--config=config-file]"
-	print ""
-	print "参数说明："
-	print "--version：输出版本号。"
-	print "-h, --help：输出命令行帮助。"
-	print "-c, --config：指定配置文件。"
+	print u"命令行：dnsproxy [--version] [-h] [--help] [-c config-file] [--config=config-file]"
+	print u""
+	print u"参数说明："
+	print u"--version：输出版本号。"
+	print u"-h, --help：输出命令行帮助。"
+	print u"-c, --config：指定配置文件。"
 
 # 解析参数
 try:
@@ -35,7 +35,7 @@ CONFIG_FILE = None
 
 for o,a in _optlist:
 	if o == '--version':
-		print "平芜泫 DNS 代理服务器 %s" % VERSION
+		print unicode("平芜泫 DNS 代理服务器 %s" % VERSION, 'utf-8')
 		sys.exit(0)
 	elif o in ('-h', '--help'):
 		usage()
