@@ -1,0 +1,13 @@
+#
+# 平芜泫的 DNS 代理服务器 HOSTS 文件。
+#
+# HOSTS 文件只能识别 A 记录和 AAAA 记录。
+#
+
+# loopback
+127.0.0.1	localhost	
+::1			localhost
+
+# 其他 HOSTS 列表。
+
+
