@@ -54,7 +54,7 @@ def log(lv, message):
 	message -- 消息的正文。
 	"""
 	if level <= lv:
-		print "%s: %s: %s" % (datetime.datetime.now().strftime("%H:%M:%S"), get_level_str(lv), message)
+		print unicode("%s: %s: %s" % (datetime.datetime.now().strftime("%H:%M:%S"), get_level_str(lv), message), 'utf-8')
 		
 def exception(message):
 	"""
