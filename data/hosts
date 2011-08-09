@@ -1,13 +1,27 @@
 #
 # 平芜泫的 DNS 代理服务器 HOSTS 文件。
-#
 # HOSTS 文件只能识别 A 记录和 AAAA 记录。
+#
+# 格式：
+#
+# A 记录（IPv4）    ：ip4    host-name
+# AAAA 记录（IPv6） ：ip6    host-name
+# 断言 A 记录不存在 ：-      host-name
+# 断言 AAAA 不存在  ：----   host-name
+#
+# 注：
+#
+# 当 A 记录或者 AAAA 记录被断言不存在的时
+# 候，无论上游服务器是否对这个域有应答，
+# 代理服务器一律直接返回不存在。
 #
 
 # loopback
 127.0.0.1	localhost	
 ::1			localhost
 
+# 断言不存在
+# -			nobody
+# ----		nobody
+
 # 其他 HOSTS 列表。
-
-

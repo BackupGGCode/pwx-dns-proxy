@@ -53,6 +53,11 @@ class HostsTable:
 				self._A_table[host] = address
 			elif is_ipv6(address):
 				self._AAAA_table[host] = address
+			# 或者强制返回不存在
+			elif address == '-':
+				self._A_table[host] = 0
+			elif address == '----':
+				self._AAAA_table[host] = 0
 				
 		# 计算查找表。
 		self._A_table_mapper = DomainMapper(self._A_table.keys())

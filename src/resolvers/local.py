@@ -12,6 +12,7 @@ from twisted.names.dns import DomainError
 from twisted.names.error import DNSNotImplementedError
 
 import log
+from resolvers import ResolveImmediateFailure
 
 class LocalResolver(common.ResolverBase):
 	"""
@@ -51,6 +52,11 @@ class LocalResolver(common.ResolverBase):
 	def _my_lookup_A(self, name, cls, timeout):
 		value = self.hosts.lookupAddress(name)
 		if value is not None:
+			# 不存在这个域：立刻返回错误
+			if value == 0:
+				log.info("本地 HOSTS 表断言 %s 域的 A 记录不存在。" % name)
+				raise ResolveImmediateFailure()
+			# 正常匹配结果
 			log.info("本地 HOSTS 表匹配 %s 域的 A 记录。" % name)
 			return [
 					(
@@ -64,6 +70,11 @@ class LocalResolver(common.ResolverBase):
 	def _my_lookup_AAAA(self, name, cls, timeout):
 		value = self.hosts.lookupIPV6Address(name)
 		if value is not None:
+			# 不存在这个域：立刻返回错误
+			if value == 0:
+				log.info("本地 HOSTS 表断言 %s 域的 AAAA 记录不存在。" % name)
+				raise ResolveImmediateFailure()
+			# 正常匹配结果
 			log.info("本地 HOSTS 表匹配 %s 域的 AAAA 记录。" % name)
 			return [
 					(

@@ -8,13 +8,14 @@
 """
 
 from twisted.names import dns, client, error, common
-from resolvers.local import LocalResolver
-from upstreamservers import UpstreamServers
-
 from twisted.names.dns import DomainError
 from twisted.names.error import DNSNotImplementedError, DNSQueryTimeoutError
 from twisted.internet import defer
 from twisted.internet.error import TimeoutError
+
+from resolvers.local import LocalResolver
+from upstreamservers import UpstreamServers
+from resolvers import ResolveImmediateFailure
 
 class RequestDispatcher(common.ResolverBase):
 	
@@ -44,6 +45,8 @@ class RequestDispatcher(common.ResolverBase):
 			return self.local._lookup(name, cls, type, timeout)
 		except DomainError:
 			pass
+		except ResolveImmediateFailure:
+			return defer.fail(DomainError())
 			
 		# 尝试使用 Upstream Resolver 解析。
 		try:
@@ -51,11 +54,11 @@ class RequestDispatcher(common.ResolverBase):
 			if resolver != None:
 				return resolver._lookup(name, cls, type, timeout)
 		except DomainError as e:
-			raise defer.fail(e)
+			return defer.fail(e)
 		except TimeoutError as e:
-			raise defer.fail(e)
+			return defer.fail(e)
 		
 		# 最终抛出异常
-		raise defer.fail(DomainError())
+		return defer.fail(DomainError())
 
 	
