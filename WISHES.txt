@@ -1,0 +1,2 @@
+1、SOCKS5 代理。
+2、add_lookups：正则表达式。

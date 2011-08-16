@@ -4,6 +4,13 @@
 # 作者：平芜泫（airyai@gmail.com）。
 #
 
+2011/8/9 版本 0.1 Alpha 3：
+* 修改了 hosts 模块，增加“断言不存在”的功能。
+* 修正了日志、命令行帮助以及版本号的 Windows 乱码。
+* 重写 log 模块，通过 python 的标准 logging 模块，支持日志文件、以及格式化输出。
+* 重构 dnsproxy.py，将主循环代码转移到 application.py；命令行 arguments.py 合并入 dnsproxy.py。
+* 增加 environment.py，将 appPath 和 currentPath 的代码从 dnsproxy.py 分离，并且增加修改它们的 API。
+
 2011/8/9 版本 0.1 Alpha 2：
 * 修改了程序启动代码，不需要通过 twistd 运行。
 * 优化代码：UpstreamResolver, LocalResolver。

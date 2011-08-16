@@ -177,16 +177,31 @@ class Config:
 			self.udp_if.append( (address, port) )
 			
 		return {
+			# 路径配置
+			"chroot": chroot,
+			
+			# 侦听设置
+			"listen_tcp": listenTCP,
+			"listen_udp": listenUDP,
+		
+			# UpstreamServers 配置
 			"add_server": add_server,
 			"set_default_server": set_default_server,
 			"add_lookups": add_lookups,
+			
+			# HOSTS 配置
 			"init_hosts": init_hosts,
 			"init_hosts_file": init_hosts_file,
 			"set_hosts_ttl": set_hosts_ttl,
-			"chroot": chroot,
-			"listen_tcp": listenTCP,
-			"listen_udp": listenUDP,
-			"log_level": log.set_level_str,
+			
+			# 日志设置
+			"enable_log": log.enable_log,
+			"disable_log": log.disable_log,
+			"get_level_str": log.get_level_str,
+			"set_level_str": log.set_level_str,
+			"set_log_format": log.set_log_format,
+			"set_log_level": log.set_log_level,
+			"log_to_file": log.log_to_file,
 		}
 
 

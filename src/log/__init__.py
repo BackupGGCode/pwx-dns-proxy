@@ -8,77 +8,86 @@
 """
 
 import sys
-import traceback
 import datetime
+import logging
+import logging.config
 
-# 定义 Logger 的消息级别。
-UNSET, DEBUG, INFO, WARNING, ERROR, FATAL = range(0, 60, 10)
-level_str = {
-	UNSET: "UNSET",
-	DEBUG: "DEBUG",
-	INFO: "INFO",
-	WARNING: "WARNING",
-	ERROR: "ERROR",
-	FATAL: "FATAL",
-}
-level_map = { v:k for k,v in level_str.items() }
+# 初始化 logger 对象
+_log_enabled = True
+_log = logging.getLogger()
 
-# 当前级别。
-level = UNSET
+# 设置屏幕日志输出
+_my_console_handler = logging.StreamHandler(sys.stdout)
+_my_handlers = [
+	_my_console_handler,
+]
+_my_formatter = logging.Formatter(
+	fmt='%(asctime)s: %(levelname)s: %(message)s',
+	datefmt=None
+)
+_my_console_handler.setFormatter(_my_formatter)
 
-def get_level_str(lv):
-	if lv in level_str:
-		return level_str[lv]
-	else:
-		return str(lv)
-		
-def set_level_str(s):
-	global level
-	if s in level_map:
-		level = level_map[s]
-	else:
-		try:
-			level = int(s)
-		except ValueError:
-			raise ValueError("日志级别 %s 未定义。" % s)
+_log.addHandler(_my_console_handler)
 
-# 数据输出
-def log(lv, message):
-	"""
-	记录一条日志消息。
+# 启用 / 禁用 log
+def enable_log():
+	global _log_enabled
+	_log_enabled = True
 	
-	参数：
+def disable_log():
+	global _log_enabled
+	_log_enabled = False
+
+# 包装 logging 类型
+def log(lvl, message):
+	# 转换字符串格式
+	if not isinstance(message, unicode):
+		if not isinstance(message, str):
+			message = str(message)
+		message = unicode(message, 'utf-8')
 	
-	lv -- 消息的级别。预定义的级别为 UNSET, DEBUG,
-	  INFO, WARNING, ERROR, FATAL。
-	message -- 消息的正文。
-	"""
-	if level <= lv:
-		print unicode("%s: %s: %s" % (datetime.datetime.now().strftime("%H:%M:%S"), get_level_str(lv), message), 'utf-8')
-		
+	# 输出
+	if _log_enabled:
+		_log.log(lvl, message)
+	
 def exception(message):
-	"""
-	记录一个异常。
-	
-	参数：
-	
-	message -- 程序的描述。
-	"""
-	error("%s\n%s" % (message, ''.join(traceback.format_exception(*sys.exc_info()))))
+	log(logging.ERROR, message)
 
 def debug(message):
-	log(DEBUG, message)
+	log(logging.DEBUG, message)
 	
 def info(message):
-	log(INFO, message)
+	log(logging.INFO, message)
 	
 def warning(message):
-	log(WARNING, message)
+	log(logging.WARNING, message)
 	
 def error(message):
-	log(ERROR, message)
+	log(logging.ERROR, message)
 	
 def fatal(message):
-	log(FATAL, message)
-	
+	log(logging.CRITICAL, message)
 
+# 日志级别的操作函数
+def get_level_str(lv):
+	return logging.getLevelName(lv)
+		
+def set_level_str(lv, name):
+	logging.addLevelName(lv, name)
+	
+# 日志配置
+def set_log_format(fmt, datefmt=None):
+	global _my_formatter, _my_handlers
+	_my_formatter = logging.Formatter(fmt, datefmt)
+	
+	for h in _my_handlers:
+		h.setFormatter(_my_formatter)
+	
+def set_log_level(lvl):
+	_log.setLevel(lvl)
+	
+def log_to_file(log_path):
+	h = logging.FileHandler(filename=log_path)
+	h.setFormatter(_my_formatter)
+	_my_handlers.append(h)
+	_log.addHandler(h)
